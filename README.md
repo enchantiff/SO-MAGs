@@ -1,2 +1,2 @@
 # SO-MAGs
-Scripts used to generate MAGs from the SO
+Scripts used to generate Metagenome-Assembled Genomes from the Southern Ocean
