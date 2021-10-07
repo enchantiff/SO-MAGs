@@ -1,4 +1,4 @@
 # SO-MAGs
-Scripts used to generate Metagenome-Assembled Genomes from the Southern Ocean
+Scripts used to generate Metagenome-Assembled Genomes from the Southern Ocean, see flow diagram below:
 
-![Untitled](https://user-images.githubusercontent.com/84008482/136345793-0c175c4f-3a04-4584-9975-ab85aa0acf4c.png)
+![Untitled](https://user-images.githubusercontent.com/84008482/136346041-0652c7c6-72dc-4a9d-aec3-2c24ee4f41fd.png)
