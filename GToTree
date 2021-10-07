@@ -1,0 +1,1 @@
+GToTree -g SAR324_gbff.txt -f SAR324_fa.txt -H Bacteria -j 4 -o SAR324_output
