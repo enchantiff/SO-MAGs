@@ -46,3 +46,16 @@ concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b 
 merge_cutup_clustering.py concoct_output/clustering_gt1000.csv > concoct_output/clustering_merged.csv
 mkdir concoct_output/fasta_bins
 extract_fasta_bins.py contigs.fasta concoct_output/clustering_merged.csv --output_path concoct_output/fasta_bins`
+
+## DAS Tool
+Binning was done with the use of MetaBAT (Kang et al., 2019), CONCOCT (Alneberg et al., 2013) and MaxBin (Wu, Simmons and Singer, 2016) and were assessed by DAS Tool (Sieber et al., 2018) to choose the best quality bins.
+
+`DAS_Tool -i /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/metabat_bins/metabat.scaffolds2bin.tsv,/nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/maxbin_bins/maxbin.scaffolds2bin.tsv,/nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/concoct_output/concoct.scaffolds2bin.tsv -l metabat,maxbin,concoct -c contigs.fasta -o DAST_1500 --write_bins 1 --db_directory /nlustre/users/tiffdp/SCALE-META-reads/db -t 20`
+
+## GTDB-Tk
+Once DAS Tool had selected the bins of good quality, GTDB-Tk (Chaumeil et al., 2020) was utilized for taxonomic classification.
+
+`gtdbtk identify --genome_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/dast_bins/DAST_1500_DASTool_bins --out_dir gtdbtk_identify -x fa --cpus 2
+gtdbtk align --identify_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/gtdbtk_identify --out_dir gtdbtk_align --cpus 2
+gtdbtk classify --genome_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/dast_bins/DAST_1500_DASTool_bins --align_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/gtdbtk_align --out_dir gtdbtk_classify -x fa --cpus 2`
+
