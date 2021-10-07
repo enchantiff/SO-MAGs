@@ -59,3 +59,17 @@ Once DAS Tool had selected the bins of good quality, GTDB-Tk (Chaumeil et al., 2
 gtdbtk align --identify_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/gtdbtk_identify --out_dir gtdbtk_align --cpus 2
 gtdbtk classify --genome_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/dast_bins/DAST_1500_DASTool_bins --align_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/gtdbtk_align --out_dir gtdbtk_classify -x fa --cpus 2`
 
+## MicrobeAnnotator
+MAGs were annotated with MicrobeAnnotator (Ruiz-Perez, Conrad and Konstantinidis, 2021).
+
+`microbeannotator -i $(ls *.faa) -d /nlustre/data/MicrobeAnnotator_DB -o microbean -m blast -p 2 -t 12`
+
+## DRAM
+MAGs were annotated with DRAM (Shaffer et al., 2020).
+
+`DRAM.py annotate -i '*.fa' -o annotation
+DRAM.py distill -i annotation/annotations.tsv -o genome_summaries --trna_path annotation/trnas.tsv --rrna_path annotation/rrnas.tsv`
+
+## GToTree
+
+`GToTree -g SAR324_gbff.txt -f SAR324_fa.txt -H Bacteria -j 4 -o SAR324_output`
