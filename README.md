@@ -87,5 +87,6 @@ MAGs were annotated with DRAM (Shaffer et al., 2020).
 `DRAM.py distill -i annotation/annotations.tsv -o genome_summaries --trna_path annotation/trnas.tsv --rrna_path annotation/rrnas.tsv`
 
 ## GToTree
+Phylogenetic trees generated using GToTree (Lee, 2019).
 
 `GToTree -g SAR324_gbff.txt -f SAR324_fa.txt -H Bacteria -j 4 -o SAR324_output`
