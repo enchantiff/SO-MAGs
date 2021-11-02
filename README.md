@@ -1,16 +1,16 @@
 # SO-MAGs
-Scripts used to generate Metagenome-Assembled Genomes from the Southern Ocean, see flow diagram below:
+Scripts used to generate Metagenome-Assembled Genomes from metagenomic samples collected from the Southern Ocean, see flow diagram below:
 
 ![Untitled - Copy](https://user-images.githubusercontent.com/84008482/139815771-bfade10a-c602-4953-80ab-62681f56c6fb.png)
 
 ## ATLAS
-While we assembled and binned each sample step-by-step, ATLAS (Kieser et al., 2020) ran on all the samples.
+ATLAS (Kieser et al., 2020) ran quality control, assembly and binning on all the samples.
 
 `atlas init –db-dir databases /nlustre/users/tiffdp/SCALE-META-reads/atlas/ --working-dir /nlustre/users/tiffdp/SCALE-META-reads/atlas/SCALE-META-reads
 atlas run qc assembly binning --resources mem=250 --jobs 20 –-keep-going`
 
 ## Trimmomatic
-The raw sequence reads needed to be trimmed with Trimmomatic (Bolger, Lohse and Usadel, 2014) to remove low quality reads and Nextera PE-PE adapters.
+Trimmomatic (Bolger, Lohse and Usadel, 2014) trimmed the raw sequence reads.
 
 `for f in $(ls *fastq.gz | sed -e 's/_R1_001.fastq.gz//' -e 's/_R2_001.fastq.gz//' | sort -u)`
 
@@ -19,7 +19,7 @@ The raw sequence reads needed to be trimmed with Trimmomatic (Bolger, Lohse and 
 `done`
 
 ## MetaSPAdes
-Subsequently, the high-quality paired reads were aligned using MetaSPAdes (Nurk et al., 2017) to assemble contiguous sequences.
+MetaSPAdes (Nurk et al., 2017) assembled the trimmed reads.
 
 `for f in $(ls *fastq.gz | sed -e 's/_R1_001_paired.fastq.gz//' -e 's/_R2_001_paired.fastq.gz//' | sort -u)`
 
@@ -28,7 +28,7 @@ Subsequently, the high-quality paired reads were aligned using MetaSPAdes (Nurk 
 `done`
 
 ## MetaBAT
-Binning was done with the use of MetaBAT (Kang et al., 2019).
+MetaBAT (Kang et al., 2019) binned the contigs.
 
 `jgi_summarize_bam_contig_depths --outputDepth depth.txt *.bam`
 
@@ -37,7 +37,7 @@ Binning was done with the use of MetaBAT (Kang et al., 2019).
 `metabat -i contigs.fasta -a depth.txt –sensitive -o metabat_sensitive -v > log.txt`
 
 ## MaxBin
-Binning was done with the use of MaxBin (Wu, Simmons and Singer, 2016).
+MaxBin (Wu, Simmons and Singer, 2016) binned the contigs.
 
 `pileup.sh in=metaspades.sam out=cov.txt`
 
@@ -46,7 +46,7 @@ Binning was done with the use of MaxBin (Wu, Simmons and Singer, 2016).
 `run_MaxBin.pl -thread 20 -contig contigs.fasta -out maxbin -abund abundance.txt`
 
 ## CONCOCT
-Binning was done with the use of CONCOCT (Alneberg et al., 2013).
+CONCOCT (Alneberg et al., 2013) binned the contigs.
 
 `cut_up_fasta.py contigs.fasta -c 10000 -o 0 --merge_last -b contigs_10K.bed > contigs_10K.fa`
 
@@ -61,12 +61,12 @@ Binning was done with the use of CONCOCT (Alneberg et al., 2013).
 `extract_fasta_bins.py contigs.fasta concoct_output/clustering_merged.csv --output_path concoct_output/fasta_bins`
 
 ## DAS Tool
-Binning was done with the use of MetaBAT (Kang et al., 2019), CONCOCT (Alneberg et al., 2013) and MaxBin (Wu, Simmons and Singer, 2016) and were assessed by DAS Tool (Sieber et al., 2018) to choose the best quality bins.
+DAS Tool (Sieber et al., 2018) produce genome quality statistics that were used to review the bins.
 
 `DAS_Tool -i /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/metabat_bins/metabat.scaffolds2bin.tsv,/nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/maxbin_bins/maxbin.scaffolds2bin.tsv,/nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/concoct_output/concoct.scaffolds2bin.tsv -l metabat,maxbin,concoct -c contigs.fasta -o DAST_1500 --write_bins 1 --db_directory /nlustre/users/tiffdp/SCALE-META-reads/db -t 20`
 
 ## GTDB-Tk
-Once DAS Tool had selected the bins of good quality, GTDB-Tk (Chaumeil et al., 2020) was utilized for taxonomic classification.
+GTDB-Tk (Chaumeil et al., 2020) taxonomically classified the MAGs.
 
 `gtdbtk identify --genome_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/dast_bins/DAST_1500_DASTool_bins --out_dir gtdbtk_identify -x fa --cpus 2`
 
@@ -75,18 +75,18 @@ Once DAS Tool had selected the bins of good quality, GTDB-Tk (Chaumeil et al., 2
 `gtdbtk classify --genome_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/dast_bins/DAST_1500_DASTool_bins --align_dir /nlustre/users/tiffdp/SCALE-META-reads/deeper_samples/20082D-04-18_S11_L003_metaspades_results/gtdbtk_align --out_dir gtdbtk_classify -x fa --cpus 2`
 
 ## MicrobeAnnotator
-MAGs were annotated with MicrobeAnnotator (Ruiz-Perez, Conrad and Konstantinidis, 2021).
+MicrobeAnnotator (Ruiz-Perez, Conrad and Konstantinidis, 2021) provided annotations for the MAGs.
 
 `microbeannotator -i $(ls *.faa) -d /nlustre/data/MicrobeAnnotator_DB -o microbean -m blast -p 2 -t 12`
 
 ## DRAM
-MAGs were annotated with DRAM (Shaffer et al., 2020).
+DRAM (Shaffer et al., 2020) provided annotations for the MAGs.
 
 `DRAM.py annotate -i '*.fa' -o annotation`
 
 `DRAM.py distill -i annotation/annotations.tsv -o genome_summaries --trna_path annotation/trnas.tsv --rrna_path annotation/rrnas.tsv`
 
 ## GToTree
-Phylogenetic trees generated using GToTree (Lee, 2019).
+GToTree (Lee, 2019) generated a phylogenetic tree for SAR324 amongst the MAGs.
 
-`GToTree -g SAR324_gbff.txt -f SAR324_fa.txt -H Bacteria -j 4 -o SAR324_output`
+`GToTree -f SAR324_fa.txt -H Bacteria -T IQ-TREE -G 0.3 -j 24 -o SAR324_quality_output`
