@@ -1,7 +1,7 @@
 # SO-MAGs
 Scripts used to generate Metagenome-Assembled Genomes from the Southern Ocean, see flow diagram below:
 
-![Untitled](https://user-images.githubusercontent.com/84008482/139815488-97004825-4234-423d-8720-d294f808fbbf.png)
+![Untitled - Copy](https://user-images.githubusercontent.com/84008482/139815771-bfade10a-c602-4953-80ab-62681f56c6fb.png)
 
 ## ATLAS
 While we assembled and binned each sample step-by-step, ATLAS (Kieser et al., 2020) ran on all the samples.
